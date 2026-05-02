@@ -70,6 +70,36 @@ pub struct EscrowFunded {
     pub amount: i128,
 }
 
+#[contractevent]
+pub struct EscrowReleased {
+    #[topic]
+    pub escrow_id: String,
+    pub beneficiary: Address,
+    pub amount: i128,
+}
+
+#[contractevent]
+pub struct EscrowRefunded {
+    #[topic]
+    pub escrow_id: String,
+    pub depositor: Address,
+    pub amount: i128,
+}
+
+#[contractevent]
+pub struct EscrowDisputed {
+    #[topic]
+    pub escrow_id: String,
+    pub raised_by: Address,
+}
+
+#[contractevent]
+pub struct DisputeResolved {
+    #[topic]
+    pub escrow_id: String,
+    pub released_to_beneficiary: bool,
+}
+
 // ── Contract ──────────────────────────────────────────────────────────────────
 
 #[contract]
@@ -77,6 +107,8 @@ pub struct EscrowContract;
 
 #[contractimpl]
 impl EscrowContract {
+    // ── Admin ─────────────────────────────────────────────────────────────────
+
     pub fn initialize(env: Env, admin: Address) {
         if env.storage().instance().has(&ADMIN) {
             panic!("already initialized");
@@ -89,6 +121,8 @@ impl EscrowContract {
             .instance()
             .set(&DEP_IDX, &Map::<Address, Vec<String>>::new(&env));
     }
+
+    // ── Escrow lifecycle ──────────────────────────────────────────────────────
 
     /// Create a new escrow. Funds are not transferred yet — call fund_escrow next.
     pub fn create_escrow(env: Env, params: CreateEscrowParams) {
@@ -155,6 +189,117 @@ impl EscrowContract {
         .publish(&env);
     }
 
+    /// Arbiter or depositor releases funds to beneficiary.
+    pub fn release(env: Env, escrow_id: String, caller: Address) {
+        caller.require_auth();
+        let mut data = Self::load(&env, &escrow_id);
+        if data.status != EscrowStatus::Funded {
+            panic!("escrow not funded");
+        }
+        if caller != data.arbiter && caller != data.depositor {
+            panic!("unauthorized");
+        }
+
+        soroban_sdk::token::Client::new(&env, &data.token).transfer(
+            &env.current_contract_address(),
+            &data.beneficiary,
+            &data.amount,
+        );
+
+        data.status = EscrowStatus::Released;
+        Self::save(&env, data.clone());
+
+        EscrowReleased {
+            escrow_id,
+            beneficiary: data.beneficiary,
+            amount: data.amount,
+        }
+        .publish(&env);
+    }
+
+    /// Arbiter refunds depositor (or anyone can trigger after expiry).
+    pub fn refund(env: Env, escrow_id: String) {
+        let mut data = Self::load(&env, &escrow_id);
+        if data.status != EscrowStatus::Funded && data.status != EscrowStatus::Disputed {
+            panic!("escrow not refundable");
+        }
+
+        let expired = env.ledger().timestamp() >= data.expiry_ts;
+        if !expired {
+            data.arbiter.require_auth();
+        }
+
+        soroban_sdk::token::Client::new(&env, &data.token).transfer(
+            &env.current_contract_address(),
+            &data.depositor,
+            &data.amount,
+        );
+
+        data.status = EscrowStatus::Refunded;
+        Self::save(&env, data.clone());
+
+        EscrowRefunded {
+            escrow_id,
+            depositor: data.depositor,
+            amount: data.amount,
+        }
+        .publish(&env);
+    }
+
+    /// Raise a dispute with an evidence hash (SHA-256 of off-chain evidence).
+    pub fn dispute(env: Env, escrow_id: String, evidence_hash: Bytes, raised_by: Address) {
+        raised_by.require_auth();
+        let mut data = Self::load(&env, &escrow_id);
+        if data.status != EscrowStatus::Funded {
+            panic!("can only dispute funded escrow");
+        }
+        if raised_by != data.depositor && raised_by != data.beneficiary {
+            panic!("only depositor or beneficiary can dispute");
+        }
+
+        data.status = EscrowStatus::Disputed;
+        data.evidence_hash = Some(evidence_hash);
+        Self::save(&env, data.clone());
+
+        EscrowDisputed {
+            escrow_id,
+            raised_by,
+        }
+        .publish(&env);
+    }
+
+    /// Arbiter resolves a dispute.
+    pub fn resolve_dispute(env: Env, escrow_id: String, release_to_beneficiary: bool) {
+        let mut data = Self::load(&env, &escrow_id);
+        if data.status != EscrowStatus::Disputed {
+            panic!("escrow not in disputed state");
+        }
+        data.arbiter.require_auth();
+
+        let recipient = if release_to_beneficiary {
+            data.beneficiary.clone()
+        } else {
+            data.depositor.clone()
+        };
+
+        soroban_sdk::token::Client::new(&env, &data.token).transfer(
+            &env.current_contract_address(),
+            &recipient,
+            &data.amount,
+        );
+
+        data.status = EscrowStatus::Resolved;
+        Self::save(&env, data.clone());
+
+        DisputeResolved {
+            escrow_id,
+            released_to_beneficiary: release_to_beneficiary,
+        }
+        .publish(&env);
+    }
+
+    // ── Queries ───────────────────────────────────────────────────────────────
+
     pub fn get_escrow(env: Env, escrow_id: String) -> EscrowData {
         Self::load(&env, &escrow_id)
     }
@@ -163,6 +308,8 @@ impl EscrowContract {
         let idx: Map<Address, Vec<String>> = env.storage().instance().get(&DEP_IDX).unwrap();
         idx.get(depositor).unwrap_or_else(|| Vec::new(&env))
     }
+
+    // ── Internal ──────────────────────────────────────────────────────────────
 
     fn load(env: &Env, escrow_id: &String) -> EscrowData {
         let escrows: Map<String, EscrowData> = env.storage().instance().get(&ESCROWS).unwrap();
@@ -175,3 +322,5 @@ impl EscrowContract {
         env.storage().instance().set(&ESCROWS, &escrows);
     }
 }
+
+mod test;
