@@ -1,0 +1,17 @@
+VERSION = "2.0.0"
+
+[DOCUMENTATION]
+ORG_NAME = "Stellar Escrow Protocol"
+ORG_URL = "https://github.com/Escelit/stellar-escrow"
+ORG_DESCRIPTION = "Decentralized escrow protocol with AI dispute resolution for Stellar/Soroban."
+ORG_GITHUB = "Escelit"
+
+[[PRINCIPALS]]
+name = "Stellar Escrow Maintainer"
+github = "Escelit"
+
+[[CONTRACTS]]
+name = "escrow-core"
+description = "Soroban escrow contract with milestone release and AI-assisted dispute resolution"
+network = "testnet"
+address = "TBD"
