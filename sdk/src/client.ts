@@ -7,7 +7,17 @@ import {
   nativeToScVal,
   scValToNative,
 } from "@stellar/stellar-sdk";
-import { EscrowConfig, EscrowData, CreateEscrowParams } from "./types";
+import {
+  EscrowConfig,
+  EscrowData,
+  CreateEscrowParams,
+  CreateTokenEscrowParams,
+} from "./types";
+import {
+  getEscrowToken,
+  parseTokenAmount,
+  STELLAR_TOKEN_DECIMALS,
+} from "./tokens";
 
 /**
  * EscrowClient — interact with the stellar-escrow contract.
@@ -44,6 +54,26 @@ export class EscrowClient {
         { type: "map" }
       ),
     ]);
+  }
+
+  async createEscrowWithTokenAmount(
+    params: CreateTokenEscrowParams
+  ): Promise<string> {
+    const token = params.tokenSymbol
+      ? getEscrowToken(params.tokenSymbol)
+      : undefined;
+    const decimals =
+      params.tokenDecimals ?? token?.decimals ?? STELLAR_TOKEN_DECIMALS;
+
+    return this.createEscrow({
+      escrowId: params.escrowId,
+      depositor: params.depositor,
+      beneficiary: params.beneficiary,
+      arbiter: params.arbiter,
+      amount: parseTokenAmount(params.amount, decimals),
+      token: params.tokenContractId,
+      expiryTs: params.expiryTs,
+    });
   }
 
   async fundEscrow(escrowId: string): Promise<string> {

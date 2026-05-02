@@ -1,5 +1,6 @@
 import { Networks } from "@stellar/stellar-sdk";
 import { EscrowClient } from "../src/client";
+import { formatTokenAmount, parseTokenAmount } from "../src/tokens";
 
 const CONFIG = {
   contractId: "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
@@ -90,5 +91,53 @@ describe("EscrowClient write operations", () => {
 
     const hash = await client.fundEscrow("e1");
     expect(hash).toBe("txhash123");
+  });
+
+  test("createEscrowWithTokenAmount converts USDC display amount", async () => {
+    const client = makeClient();
+    const createEscrow = jest
+      .spyOn(client, "createEscrow")
+      .mockResolvedValue("txhash123");
+
+    const hash = await client.createEscrowWithTokenAmount({
+      escrowId: "e1",
+      depositor: "GDEPOSITOR",
+      beneficiary: "GBENEFICIARY",
+      arbiter: "GARBITER",
+      amount: "12.3456789",
+      tokenContractId: "CUSDC",
+      tokenSymbol: "USDC",
+      expiryTs: 1777743556,
+    });
+
+    expect(hash).toBe("txhash123");
+    expect(createEscrow).toHaveBeenCalledWith({
+      escrowId: "e1",
+      depositor: "GDEPOSITOR",
+      beneficiary: "GBENEFICIARY",
+      arbiter: "GARBITER",
+      amount: 123456789n,
+      token: "CUSDC",
+      expiryTs: 1777743556,
+    });
+  });
+});
+
+describe("token amount helpers", () => {
+  test("parseTokenAmount converts XLM/USDC decimals to contract units", () => {
+    expect(parseTokenAmount("1")).toBe(10000000n);
+    expect(parseTokenAmount("1.23")).toBe(12300000n);
+    expect(parseTokenAmount("0.0000001")).toBe(1n);
+  });
+
+  test("parseTokenAmount rejects values with too many decimals", () => {
+    expect(() => parseTokenAmount("0.00000001")).toThrow(
+      "at most 7 decimal places"
+    );
+  });
+
+  test("formatTokenAmount converts contract units back to a display amount", () => {
+    expect(formatTokenAmount(12300000n)).toBe("1.23");
+    expect(formatTokenAmount(1n)).toBe("0.0000001");
   });
 });

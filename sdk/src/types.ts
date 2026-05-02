@@ -1,3 +1,5 @@
+import type { EscrowTokenSymbol } from "./tokens";
+
 export interface EscrowConfig {
   contractId: string;
   networkPassphrase: string;
@@ -32,4 +34,12 @@ export interface CreateEscrowParams {
   amount: bigint;
   token: string;
   expiryTs: number;
+}
+
+export interface CreateTokenEscrowParams
+  extends Omit<CreateEscrowParams, "amount" | "token"> {
+  amount: string | number;
+  tokenContractId: string;
+  tokenSymbol?: EscrowTokenSymbol;
+  tokenDecimals?: number;
 }
