@@ -1,0 +1,26 @@
+{
+  "name": "@stellar-escrow/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the Stellar Escrow Protocol",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "13.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.14",
+    "@types/node": "22.15.3",
+    "jest": "29.7.0",
+    "ts-jest": "29.3.2",
+    "typescript": "5.8.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/__tests__/**/*.test.ts"]
+  }
+}
