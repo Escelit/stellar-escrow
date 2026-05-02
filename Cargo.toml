@@ -1,0 +1,6 @@
+[workspace]
+resolver = "2"
+members = ["contracts/escrow-core"]
+
+[workspace.dependencies]
+soroban-sdk = "25.3.1"
