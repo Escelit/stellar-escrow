@@ -3,18 +3,42 @@ import { useNavigate } from "react-router-dom";
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3001";
 
+// Stellar public key: G + 55 base32 chars, total 56
+const STELLAR_ADDRESS_RE = /^G[A-Z2-7]{55}$/;
+// Stellar contract address: C + 55 base32 chars, or "native"
+const STELLAR_CONTRACT_RE = /^(C[A-Z2-7]{55}|native)$/;
+
+const INITIAL_FORM = {
+  escrowId: "",
+  depositor: "",
+  beneficiary: "",
+  arbiter: "",
+  amount: "",
+  token: "",
+  expiryDays: "30",
+  description: "",
+};
+
+function validateForm(form: typeof INITIAL_FORM): string | null {
+  if (!form.escrowId.trim()) return "Escrow ID is required";
+  for (const field of ["depositor", "beneficiary", "arbiter"] as const) {
+    if (!STELLAR_ADDRESS_RE.test(form[field]))
+      return `${field.charAt(0).toUpperCase() + field.slice(1)} must be a valid Stellar address (starts with G, 56 chars)`;
+  }
+  if (!STELLAR_CONTRACT_RE.test(form.token))
+    return 'Token must be a valid contract address (starts with C) or "native"';
+  const amount = Number(form.amount);
+  if (!Number.isInteger(amount) || amount <= 0)
+    return "Amount must be a positive integer (stroops)";
+  const expiry = Number(form.expiryDays);
+  if (!Number.isInteger(expiry) || expiry <= 0)
+    return "Expiry must be a positive number of days";
+  return null;
+}
+
 export default function CreateEscrow() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    escrowId: "",
-    depositor: "",
-    beneficiary: "",
-    arbiter: "",
-    amount: "",
-    token: "",
-    expiryDays: "30",
-    description: "",
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
   const [nlpResult, setNlpResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +67,12 @@ export default function CreateEscrow() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
+    const validationError = validateForm(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     // TODO: call EscrowClient.createEscrow() with wallet integration
     alert("Wallet integration coming soon — connect a Stellar wallet to submit.");
     navigate(`/escrow/${form.escrowId}`);
@@ -85,7 +115,7 @@ export default function CreateEscrow() {
           ["Beneficiary address", "beneficiary", "G..."],
           ["Arbiter address", "arbiter", "G..."],
           ["Amount (stroops)", "amount", "5000000000"],
-          ["Token contract", "token", "C... (or native)"],
+          ['Token contract (or "native")', "token", "C... or native"],
           ["Expiry (days)", "expiryDays", "30"],
         ].map(([label, key, placeholder]) => (
           <div key={key}>
