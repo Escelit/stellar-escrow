@@ -8,6 +8,17 @@ A state-of-the-art decentralized escrow protocol built on the **Stellar/Soroban*
 
 ---
 
+## 🌟 The Vision
+
+Stellar Escrow Protocol was born to solve a fundamental friction in the digital economy: **Trust**. Traditional escrow services are either centralized, slow, or prohibitively expensive for small-to-medium transactions. By combining the speed and low cost of the **Stellar** network with the analytical power of **Large Language Models (LLMs)**, we provide a friction-free trust layer for the internet.
+
+### Why This Matters:
+- **Bridging the Gap**: Most users find smart contracts intimidating. Our **NLP Parser** allows anyone to create a legally-sound, on-chain escrow using plain English.
+- **Scalable Justice**: Human arbitration is the bottleneck of decentralized finance. Our **AI Arbiter** provides near-instant analysis of evidence, recommending resolutions with human-level reasoning but at machine speed.
+- **Non-Custodial Trust**: Funds are never held by a third party. They are locked in a Soroban smart contract, ensuring that neither the platform nor the AI can "steal" the funds. They can only be released based on pre-defined conditions or cryptographically signed resolutions.
+
+---
+
 ## 📖 Table of Contents
 - [Core Features](#-core-features)
 - [Architecture](#-architecture)
