@@ -1,10 +1,20 @@
-# ✨ Stellar Escrow Protocol
+# 🛡️ Stellar Escrow Protocol
 
-[![Stellar](https://img.shields.io/badge/Stellar-Soroban-blue.svg)](https://stellar.org/soroban)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status: Alpha](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
+<div align="center">
 
-A state-of-the-art decentralized escrow protocol built on the **Stellar/Soroban** ecosystem, featuring **AI-powered dispute resolution** and natural language escrow creation.
+![Stellar Escrow Protocol Banner](/home/escelit/.gemini/antigravity/brain/e8a0e418-5c1e-47c4-8ee4-e75b5b82e58d/stellar_escrow_banner_1777980779941.png)
+
+[![Stellar](https://img.shields.io/badge/Stellar-Soroban-7D00FF?style=for-the-badge&logo=stellar)](https://stellar.org/soroban)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![Rust](https://img.shields.io/badge/Rust-2021-000000?style=for-the-badge&logo=rust)](https://www.rust-lang.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+**A state-of-the-art decentralized escrow protocol built on the Stellar/Soroban ecosystem, featuring AI-powered dispute resolution and natural language escrow creation.**
+
+[Features](#-core-features) • [The Vision](#-the-vision) • [Architecture](#-architecture) • [Quick Start](#-getting-started) • [API Reference](#-api-reference) • [Contributing](#-contributing)
+
+</div>
 
 ---
 
@@ -13,37 +23,19 @@ A state-of-the-art decentralized escrow protocol built on the **Stellar/Soroban*
 Stellar Escrow Protocol was born to solve a fundamental friction in the digital economy: **Trust**. Traditional escrow services are either centralized, slow, or prohibitively expensive for small-to-medium transactions. By combining the speed and low cost of the **Stellar** network with the analytical power of **Large Language Models (LLMs)**, we provide a friction-free trust layer for the internet.
 
 ### Why This Matters:
-- **Bridging the Gap**: Most users find smart contracts intimidating. Our **NLP Parser** allows anyone to create a legally-sound, on-chain escrow using plain English.
-- **Scalable Justice**: Human arbitration is the bottleneck of decentralized finance. Our **AI Arbiter** provides near-instant analysis of evidence, recommending resolutions with human-level reasoning but at machine speed.
-- **Non-Custodial Trust**: Funds are never held by a third party. They are locked in a Soroban smart contract, ensuring that neither the platform nor the AI can "steal" the funds. They can only be released based on pre-defined conditions or cryptographically signed resolutions.
+- **🎯 Bridging the Gap**: Most users find smart contracts intimidating. Our **NLP Parser** allows anyone to create a legally-sound, on-chain escrow using plain English.
+- **⚖️ Scalable Justice**: Human arbitration is the bottleneck of decentralized finance. Our **AI Arbiter** provides near-instant analysis of evidence, recommending resolutions with human-level reasoning but at machine speed.
+- **🔒 Non-Custodial Trust**: Funds are never held by a third party. They are locked in a Soroban smart contract, ensuring that neither the platform nor the AI can "steal" the funds.
 
 ---
 
-## 📖 Table of Contents
-- [Core Features](#-core-features)
-- [Architecture](#-architecture)
-- [Project Structure](#-project-structure)
-- [Smart Contract Deep Dive](#-smart-contract-deep-dive)
-- [AI Capabilities](#-ai-capabilities)
-- [SDK Usage](#-sdk-usage)
-- [API Reference](#-api-reference)
-- [CLI Management](#-cli-management)
-- [Getting Started](#-getting-started)
-- [Development Workflow](#-development-workflow)
-- [Technical Nuances](#-technical-nuances)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
+## ✨ Core Features
 
----
-
-## 🚀 Core Features
-
-- **Soroban-Native**: Written in high-performance Rust, leveraging the safety and efficiency of the Soroban smart contract platform.
-- **AI Dispute Arbiter**: Automated analysis of evidence text using LLMs to provide resolution recommendations.
-- **NLP Escrow Creation**: Just describe the deal in plain English, and our backend will parse it into on-chain parameters.
-- **Milestone Protection**: Funds are locked securely and only released when conditions are met or an arbiter intervenes.
-- **Permissionless & Transparent**: All escrow states and dispute resolutions are recorded on the Stellar ledger.
+- **⚡ Soroban-Native**: Written in high-performance Rust, leveraging the safety and efficiency of the Soroban smart contract platform.
+- **🤖 AI Dispute Arbiter**: Automated analysis of evidence text using LLMs to provide resolution recommendations.
+- **✍️ NLP Escrow Creation**: Just describe the deal in plain English, and our backend will parse it into on-chain parameters.
+- **🛡️ Milestone Protection**: Funds are locked securely and only released when conditions are met or an arbiter intervenes.
+- **🌐 Permissionless & Transparent**: All escrow states and dispute resolutions are recorded on the Stellar ledger.
 
 ---
 
@@ -61,11 +53,14 @@ graph TD
     Contract --> Stellar[Stellar Ledger]
 ```
 
-### Component Roles:
-- **`contracts/escrow-core/`**: The "source of truth". Handles fund locking, state transitions, and authorization.
-- **`sdk/`**: A developer-friendly wrapper around the contract interactions, handling XDR serialization and transaction submission.
-- **`backend/`**: Serves as the AI bridge. It hosts the NLP parser for creating escrows and the arbiter engine for analyzing disputes.
-- **`frontend/`**: A modern React dashboard for users to manage their escrows, raise disputes, and view AI recommendations.
+### Component Roles
+
+| Component | Technology | Role |
+|-----------|------------|------|
+| **Smart Contract** | Rust + Soroban | The "source of truth". Handles fund locking, state transitions, and authorization. |
+| **SDK** | TypeScript | Developer-friendly wrapper around contract interactions and XDR serialization. |
+| **Backend** | Node.js + Express | The AI bridge hosting the NLP parser and arbiter reasoning engine. |
+| **Frontend** | React + Tailwind | Modern dashboard for escrow management and dispute resolution. |
 
 ---
 
@@ -108,14 +103,6 @@ pub struct EscrowData {
 }
 ```
 
-#### `EscrowStatus`
-- `Pending`: Escrow created but not yet funded.
-- `Funded`: Tokens are locked in the contract.
-- `Released`: Funds successfully transferred to the beneficiary.
-- `Refunded`: Funds returned to the depositor.
-- `Disputed`: A dispute has been raised and is awaiting resolution.
-- `Resolved`: Arbiter has settled the dispute.
-
 ### Contract API Reference
 
 | Function | Parameters | Description |
@@ -127,35 +114,6 @@ pub struct EscrowData {
 | `refund` | `escrow_id` | Returns funds to depositor. Callable by `arbiter`, or anyone if `expiry_ts` passed. |
 | `dispute` | `escrow_id, evidence_hash, raised_by` | Transitions status to `Disputed`. Requires `raised_by` auth. |
 | `resolve_dispute` | `escrow_id, release_to_beneficiary` | Finalizes a dispute. Only callable by `arbiter`. |
-
-### Events
-The contract emits structured events for all major state changes:
-```rust
-// Example: EscrowDisputed event
-#[contractevent]
-pub struct EscrowDisputed {
-    #[topic]
-    pub escrow_id: String,
-    pub raised_by: Address,
-}
-```
-
----
-
-## 🤖 AI Capabilities
-
-### 1. NLP Parser (`backend/src/ai/nlp.ts`)
-Converts raw text descriptions into structured escrow parameters.
-- **Input**: "I want to pay Alice 500 USDC for the logo design, due in 10 days."
-- **Output**: `{ amount: 500, currency: "USDC", beneficiary: "Alice", expiryDays: 10 }`
-
-### 2. Dispute Arbiter (`backend/src/ai/arbiter.ts`)
-Analyses submitted evidence (chat logs, screenshots description, etc.) to recommend a resolution.
-- **Logic**: Evaluates keywords like "delivered", "completed", or "fraud" (expandable to real LLM analysis).
-- **Result**: Provides a recommendation (`release` | `refund`), confidence score, and detailed reasoning.
-
-> [!TIP]
-> To enable real AI logic, set `OPENAI_API_KEY` in `backend/.env` and update the stubs in `backend/src/ai/`.
 
 ---
 
@@ -234,9 +192,9 @@ stellar contract invoke \
 
 ### Prerequisites
 - **Rust**: `rustup target add wasm32-unknown-unknown`
-- **Stellar CLI**: [Install Guide](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup#install-the-stellar-cli)
+- **Stellar CLI**: [Install Guide](https://soroban.stellar.org/docs/getting-started/setup)
 - **Node.js**: v20+
-- **Freighter Wallet**: For frontend interaction.
+- **Freighter Wallet**: [Download](https://www.freighter.app/)
 
 ### Installation
 
@@ -248,56 +206,20 @@ stellar contract invoke \
 
 2. **Install Dependencies**:
    ```bash
-   # Root
    npm install
-   # Components
-   cd backend && npm install && cd ..
-   cd frontend && npm install && cd ..
-   cd sdk && npm install && cd ..
+   # Or install individually
+   cd backend && npm install
+   cd ../frontend && npm install
+   cd ../sdk && npm install
    ```
-
----
-
-## 💻 Development Workflow
-
-### Contract Development
-```bash
-cd contracts/escrow-core
-cargo test          # Run unit tests
-cargo build --target wasm32-unknown-unknown --release
-```
-
-### SDK Integration
-```bash
-cd sdk
-npm run build       # Generate TSDoc and JS bundles
-npm test            # Run SDK integration tests
-```
-
-### Running the App
-1. **Start Backend**: `cd backend && npm run dev`
-2. **Start Frontend**: `cd frontend && npm run dev`
 
 ---
 
 ## 💡 Technical Nuances
 
-### Storage Model
-The contract uses **Instance Storage** for high-level metadata (Admin, Escrow Map) to balance performance and cost. Each escrow entry is stored within a `Map` in instance storage, ensuring consistent access times.
-
-### Authorization
-Every state-changing function requires `require_auth()` from the appropriate party:
-- `create_escrow`: `depositor`
-- `fund_escrow`: `depositor`
-- `release`: `depositor` or `arbiter`
-- `resolve_dispute`: `arbiter`
-- `dispute`: `depositor` or `beneficiary`
-
-### Error Codes (Panics)
-- `already initialized`: Triggered if `initialize` is called twice.
-- `escrow already exists`: Triggered if `escrow_id` is reused.
-- `unauthorized`: Triggered if a caller tries to `release` or `resolve` without proper authority.
-- `escrow not refundable`: Triggered if `refund` is called before expiry without arbiter approval.
+- **Storage Model**: The contract uses **Instance Storage** for high-level metadata (Admin, Escrow Map) to balance performance and cost. Each escrow entry is stored within a `Map` in instance storage, ensuring consistent access times.
+- **Authorization**: Every state-changing function requires `require_auth()` from the appropriate party.
+- **Error Handling**: Custom panic messages like `already initialized`, `escrow already exists` or `unauthorized` ensure clear failure states.
 
 ---
 
@@ -319,4 +241,6 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-<p align="center">Built with ❤️ for the Stellar Ecosystem</p>
+<div align="center">
+Built with ❤️ for the Stellar Ecosystem
+</div>
