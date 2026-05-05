@@ -13,3 +13,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Express backend with stubbed AI arbiter and NLP parser
 - React + Tailwind frontend: create escrow, escrow detail, dispute form
 - CI: Rust tests + clippy + fmt, SDK build + test, backend build, frontend build
+
+### Changed
+- **Documentation Overhaul**: Significantly expanded `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` with detailed architecture diagrams, API references, CLI examples, and professional community standards.
