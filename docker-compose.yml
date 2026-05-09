@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    environment:
+      PORT: "3001"
+      CONTRACT_ID: "${CONTRACT_ID:-}"
+      RPC_URL: "${RPC_URL:-https://soroban-testnet.stellar.org}"
+      NETWORK_PASSPHRASE: "${NETWORK_PASSPHRASE:-Test SDF Network ; September 2015}"
+      SERVER_SECRET_KEY: "${SERVER_SECRET_KEY:-}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3001/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
